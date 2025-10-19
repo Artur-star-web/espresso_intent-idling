@@ -1,0 +1,43 @@
+# Build files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file
+local.properties
+
+# Log Files
+*.log
+
+# Android Studio files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Keystore files
+*.jks
+*.keystore
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Test reports
+test_report.html
+test_results.xml
+app/build/reports/
+app/build/outputs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Allure reports (если используете)
+allure-results/
+allure-report/
