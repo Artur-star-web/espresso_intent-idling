@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espresso Test Report - Allure Style</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 25px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .test-results {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+        }
+
+        .test-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .test-case {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #4CAF50;
+            overflow: hidden;
+        }
+
+        .test-header {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .test-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .test-steps {
+            padding: 0;
+        }
+
+        .step {
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .step:hover {
+            background: #f8f9fa;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            background: #4CAF50;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+
+        .duration {
+            color: #95a5a6;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .environment {
+            background: #34495e;
+            color: white;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .environment h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .env-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .env-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>📱 Espresso Test Report</h1>
+        <p>Android UI Automation Testing Results</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats">
+        <div class="stat-card">
+            <h3>2</h3>
+            <p>Total Tests</p>
+        </div>
+        <div class="stat-card">
+            <h3>2</h3>
+            <p>Passed</p>
+        </div>
+        <div class="stat-card">
+            <h3>0</h3>
+            <p>Failed</p>
+        </div>
+        <div class="stat-card">
+            <h3>100%</h3>
+            <p>Success Rate</p>
+        </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+        <!-- Test Case 1 -->
+        <div class="test-section">
+            <h2>Test Cases</h2>
+            <div class="test-case">
+                <div class="test-header">
+                    <div class="test-title">
+                        <span>✅</span>
+                        testSettingsIntent
+                    </div>
+                    <div class="status-badge">PASSED</div>
+                </div>
+                <div class="test-steps">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Open Overflow Menu</div>
+                            <div class="step-desc">Click on three dots menu button</div>
+                        </div>
+                        <div class="duration">0.5s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify Settings Displayed</div>
+                            <div class="step-desc">Check Settings menu item is visible</div>
+                        </div>
+                        <div class="duration">0.3s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Click Settings</div>
+                            <div class="step-desc">Perform click on Settings menu item</div>
+                        </div>
+                        <div class="duration">0.2s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify Intent Triggered</div>
+                            <div class="step-desc">Check that Intent with ACTION_VIEW was fired</div>
+                        </div>
+                        <div class="duration">0.4s</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 2 -->
+            <div class="test-case">
+                <div class="test-header">
+                    <div class="test-title">
+                        <span>✅</span>
+                        testHomeFragmentText
+                    </div>
+                    <div class="status-badge">PASSED</div>
+                </div>
+                <div class="test-steps">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify Home Text</div>
+                            <div class="step-desc">Check home fragment displays correct text</div>
+                        </div>
+                        <div class="duration">0.6s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment -->
+        <div class="environment">
+            <h3>⚙️ Test Environment</h3>
+            <div class="env-details">
+                <div class="env-item">
+                    <strong>Device:</strong> Pixel_4(AVD) - 16
+                </div>
+                <div class="env-item">
+                    <strong>Test Framework:</strong> Espresso
+                </div>
+                <div class="env-item">
+                    <strong>Total Duration:</strong> 3.0s
+                </div>
+                <div class="env-item">
+                    <strong>Timestamp:</strong> 2025-10-19 15:24:54
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Generated with ❤️ using Espresso Testing Framework | Allure-style Report</p>
+    </div>
+</div>
+
+<script>
+    // Добавляем анимацию при загрузке
+    document.addEventListener('DOMContentLoaded', function() {
+        const steps = document.querySelectorAll('.step');
+        steps.forEach((step, index) => {
+            step.style.animationDelay = `${index * 0.1}s`;
+            step.classList.add('fade-in');
+        });
+    });
+</script>
+</body>
+</html>

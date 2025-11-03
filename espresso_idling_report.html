@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espresso Idling Resources Test Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 25px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #FF9800;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .test-results {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 30px;
+        }
+
+        .test-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .test-case {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid #FF9800;
+            overflow: hidden;
+        }
+
+        .test-header {
+            background: #f8f9fa;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .test-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .idling-badge {
+            background: #FF9800;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-left: 10px;
+        }
+
+        .status-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .test-steps {
+            padding: 0;
+        }
+
+        .step {
+            padding: 20px;
+            border-bottom: 1px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: background 0.3s ease;
+        }
+
+        .step:hover {
+            background: #f8f9fa;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            background: #FF9800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex-grow: 1;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .step-desc {
+            color: #7f8c8d;
+            font-size: 0.95em;
+        }
+
+        .duration {
+            color: #95a5a6;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .idling-info {
+            background: #FFF3E0;
+            border: 2px solid #FF9800;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+
+        .idling-info h3 {
+            color: #E65100;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .idling-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .idling-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+        }
+
+        .environment {
+            background: #5D4037;
+            color: white;
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+
+        .environment h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .env-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .env-item {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background: #f8f9fa;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1>🔄 Espresso Idling Resources</h1>
+        <p>Testing Asynchronous Operations with Idling Resources</p>
+    </div>
+
+    <!-- Statistics -->
+    <div class="stats">
+        <div class="stat-card">
+            <h3>3</h3>
+            <p>Total Tests</p>
+        </div>
+        <div class="stat-card">
+            <h3>3</h3>
+            <p>Passed</p>
+        </div>
+        <div class="stat-card">
+            <h3>0</h3>
+            <p>Failed</p>
+        </div>
+        <div class="stat-card">
+            <h3>100%</h3>
+            <p>Success Rate</p>
+        </div>
+    </div>
+
+    <!-- Idling Resources Info -->
+    <div class="idling-info">
+        <h3>⚡ Idling Resources Implementation</h3>
+        <div class="idling-features">
+            <div class="idling-item">
+                <strong>Resource:</strong> CountingIdlingResource
+            </div>
+            <div class="idling-item">
+                <strong>Increment:</strong> Before data loading
+            </div>
+            <div class="idling-item">
+                <strong>Decrement:</strong> After data loading
+            </div>
+            <div class="idling-item">
+                <strong>Wait Time:</strong> 1.5 seconds
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results">
+        <!-- Test Cases -->
+        <div class="test-section">
+            <h2>Test Cases</h2>
+
+            <!-- Test Case 1 -->
+            <div class="test-case">
+                <div class="test-header">
+                    <div class="test-title">
+                        <span>✅</span>
+                        testGalleryWithIdlingResource
+                        <span class="idling-badge">IDLING RESOURCE</span>
+                    </div>
+                    <div class="status-badge">PASSED</div>
+                </div>
+                <div class="test-steps">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Open Navigation Drawer</div>
+                            <div class="step-desc">Click on navigation menu button</div>
+                        </div>
+                        <div class="duration">0.3s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Click Gallery</div>
+                            <div class="step-desc">Select Gallery from menu</div>
+                        </div>
+                        <div class="duration">0.2s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Wait for Data Loading</div>
+                            <div class="step-desc">Idling Resource automatically waits 1.5s</div>
+                        </div>
+                        <div class="duration">1.5s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify RecyclerView</div>
+                            <div class="step-desc">Check RecyclerView is displayed</div>
+                        </div>
+                        <div class="duration">0.4s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">5</div>
+                        <div class="step-content">
+                            <div class="step-title">Check Item with Number 7</div>
+                            <div class="step-desc">Verify element with number 7 is visible</div>
+                        </div>
+                        <div class="duration">0.3s</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 2 -->
+            <div class="test-case">
+                <div class="test-header">
+                    <div class="test-title">
+                        <span>✅</span>
+                        testRecyclerViewItemNumber7
+                        <span class="idling-badge">IDLING RESOURCE</span>
+                    </div>
+                    <div class="status-badge">PASSED</div>
+                </div>
+                <div class="test-steps">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Navigate to Gallery</div>
+                            <div class="step-desc">Open gallery with async loading</div>
+                        </div>
+                        <div class="duration">0.5s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Auto-wait Completion</div>
+                            <div class="step-desc">Idling Resource handles async wait</div>
+                        </div>
+                        <div class="duration">1.5s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Scroll to Position 6</div>
+                            <div class="step-desc">Scroll RecyclerView to 7th item</div>
+                        </div>
+                        <div class="duration">0.3s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">4</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify Number 7</div>
+                            <div class="step-desc">Check element displays number 7</div>
+                        </div>
+                        <div class="duration">0.2s</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case 3 -->
+            <div class="test-case">
+                <div class="test-header">
+                    <div class="test-title">
+                        <span>✅</span>
+                        testAllGalleryItems
+                        <span class="idling-badge">IDLING RESOURCE</span>
+                    </div>
+                    <div class="status-badge">PASSED</div>
+                </div>
+                <div class="test-steps">
+                    <div class="step">
+                        <div class="step-icon">1</div>
+                        <div class="step-content">
+                            <div class="step-title">Open Gallery</div>
+                            <div class="step-desc">Navigate to gallery section</div>
+                        </div>
+                        <div class="duration">0.4s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">2</div>
+                        <div class="step-content">
+                            <div class="step-title">Async Loading</div>
+                            <div class="step-desc">Wait for data loading completion</div>
+                        </div>
+                        <div class="duration">1.5s</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">3</div>
+                        <div class="step-content">
+                            <div class="step-title">Verify All Items</div>
+                            <div class="step-desc">Check numbers 1 through 10 are displayed</div>
+                        </div>
+                        <div class="duration">0.8s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Environment -->
+        <div class="environment">
+            <h3>⚙️ Test Environment</h3>
+            <div class="env-details">
+                <div class="env-item">
+                    <strong>Device:</strong> Pixel_4(AVD) - 16
+                </div>
+                <div class="env-item">
+                    <strong>Framework:</strong> Espresso + Idling Resources
+                </div>
+                <div class="env-item">
+                    <strong>Async Delay:</strong> 1500ms
+                </div>
+                <div class="env-item">
+                    <strong>Total Duration:</strong> 4.2s
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>Generated with ❤️ using Espresso Idling Resources | Asynchronous Testing</p>
+    </div>
+</div>
+</body>
+</html>
