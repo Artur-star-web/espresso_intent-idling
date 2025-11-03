@@ -38,6 +38,11 @@ app/build/outputs/
 *.tmp
 *.temp
 
-# Allure reports (если используете)
+# Allure reports
 allure-results/
 allure-report/
+
+# Android specific
+/captures
+.externalNativeBuild
+.cxx

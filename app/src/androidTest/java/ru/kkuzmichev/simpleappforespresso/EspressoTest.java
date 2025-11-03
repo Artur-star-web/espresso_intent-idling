@@ -58,7 +58,6 @@ public class EspressoTest {
 
     @Test
     public void testSettingsIntent() {
-
         onView(withContentDescription("More options"))
                 .perform(click());
 
@@ -69,17 +68,16 @@ public class EspressoTest {
                 .perform(click());
 
         intended(hasAction(Intent.ACTION_VIEW));
-
     }
 
     @Test
     public void testGalleryWithIdlingResource() {
-
         onView(withContentDescription("Open navigation drawer"))
                 .perform(click());
 
         onView(withId(R.id.nav_gallery))
                 .perform(click());
+
 
         onView(withId(R.id.recycle_view))
                 .check(matches(isDisplayed()));

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_view"
         android:layout_width="409dp"
