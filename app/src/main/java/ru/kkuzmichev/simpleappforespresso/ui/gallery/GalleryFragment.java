@@ -1,6 +1,7 @@
 package ru.kkuzmichev.simpleappforespresso.ui.gallery;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,48 +45,38 @@ public class GalleryFragment extends Fragment {
         progressBar = root.findViewById(R.id.progress_bar);
         recyclerView = root.findViewById(R.id.recycle_view);
 
-        setupRecyclerView();
-        observeData();
+        fakeLoadData();
 
-
-        startDataLoading();
-
+        setLists();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new GalleryAdapter(itemList));
         return root;
     }
 
-    private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new GalleryAdapter(itemList));
+    private void setLists() {
+        for (int i = 0; i < 10; i++) {
+            itemList.add(new GalleryItem("My title", "My description", (i+1)));
+        }
     }
 
-    private void observeData() {
-
-        galleryViewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading != null) {
-                progressBar.setVisibility(isLoading ? View.VISIBLE : View.INVISIBLE);
-                recyclerView.setVisibility(isLoading ? View.INVISIBLE : View.VISIBLE);
-            }
-        });
-
-
-        galleryViewModel.getGalleryData().observe(getViewLifecycleOwner(), data -> {
-            if (data != null) {
-                itemList.clear();
-                itemList.addAll(data);
-                recyclerView.getAdapter().notifyDataSetChanged();
-
-
-                SimpleIdlingResource.decrement();
-            }
-        });
-    }
-
-    private void startDataLoading() {
+    private void fakeLoadData() {
 
         SimpleIdlingResource.increment();
 
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    recyclerView.setVisibility(View.VISIBLE);
 
-        galleryViewModel.loadGalleryData();
+                    SimpleIdlingResource.decrement();
+                }
+            }
+        }, 1500);
     }
 
     @Override
